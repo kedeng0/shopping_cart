@@ -52,7 +52,7 @@ export default function Cart({items, handleDelete}) {
             </Typography>        
             <div className={classes.container}>
             <GridList className={classes.gridList} cols={2.5}>
-                {products.map(product=><CartItemCard listing={product} key={product.data.sku} handleDelete={handleDelete}/>)}
+                {products.map(product=><CartItemCard listing={product} key={product.data.sku + product.size} handleDelete={handleDelete}/>)}
             </GridList>
         </div>
         <Divider />
