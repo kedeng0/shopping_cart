@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -8,6 +8,8 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Chip from '@material-ui/core/Chip';
+import Button from '@material-ui/core/Button';
+
 
 
 
@@ -22,6 +24,7 @@ const useStyles = makeStyles({
   cardBottom: {
     justifyContent:'center',
     alignItems:'center', 
+    flexDirection:'column'
   },
   chip: {
       margin:4,
@@ -35,9 +38,19 @@ const useStyles = makeStyles({
   }
 });
 
-export default function ItemCard({data}) {
+export default function ItemCard({data,addToCart}) {
   const classes = useStyles();
   const imageSource = "products/"+data.sku+"_1.jpg";
+  const [size, setSize] = useState("");
+
+  const handleClick = ()=> {
+      if (size === "") {
+        alert("Please select a size!");
+        return;
+      }
+      setSize("")
+      addToCart(data,size);
+  }
 
   return (
     <Card className={classes.card}>
@@ -58,10 +71,15 @@ export default function ItemCard({data}) {
         </CardContent>
       </CardActionArea>
       <CardActions className={classes.cardBottom}>
-          <Chip className={classes.chip} label="S" />
-          <Chip className={classes.chip} label="M" />
-          <Chip className={classes.chip} label="L" />
-          <Chip className={classes.chip} label="XL" />
+        <div>
+          <Chip className={classes.chip} color={size==='S'?'primary':'default'} label="S" onClick={()=>setSize('S')}/>
+          <Chip className={classes.chip} color={size==='M'?'primary':'default'} label="M" onClick={()=>setSize('M')}/>
+          <Chip className={classes.chip} color={size==='L'?'primary':'default'} label="L" onClick={()=>setSize('L')}/>
+          <Chip className={classes.chip} color={size==='XL'?'primary':'default'} label="XL" onClick={()=>setSize('XL')}/>
+        </div>
+        <Button className={classes.button} onClick={handleClick}>
+        Add to Cart
+      </Button>
       </CardActions>
     </Card>
   );

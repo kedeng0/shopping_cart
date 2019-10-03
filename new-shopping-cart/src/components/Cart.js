@@ -43,7 +43,8 @@ const useStyles = makeStyles(theme => ({
 export default function Cart({items}) {
     const classes = useStyles();
     const products = Object.values(items);
-
+    let subtotal = 0;
+    products.forEach(product=> subtotal += product.quantity*product.data.price)
   return (
     <div className={classes.root}>
             <Typography variant="h6" className={classes.title}>
@@ -51,13 +52,13 @@ export default function Cart({items}) {
             </Typography>        
             <div className={classes.container}>
             <GridList className={classes.gridList} cols={2.5}>
-                {products.map(product=><CartItemCard data={product}/>)}
+                {products.map(product=><CartItemCard listing={product} key={product.data.sku}/>)}
             </GridList>
         </div>
-        <Divider variant="fullwidth" />
+        <Divider />
         <div className={classes.bottom}>
         <Typography variant="h6" className={classes.title}>
-            SubTotal: $20
+            SubTotal: ${subtotal.toFixed(2)}
             </Typography> 
         <Button variant="contained" className={classes.button}>
         Checkout

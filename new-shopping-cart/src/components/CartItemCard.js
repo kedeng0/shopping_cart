@@ -14,11 +14,13 @@ const useStyles = makeStyles(theme => ({
    
   }));
 
-  export default function CartItemCard({data}) {
+  export default function CartItemCard({listing}) {
     const classes = useStyles();
+    const {data,quantity,size} = listing;
+    
     const imageSource = "products/"+data.sku+"_1.jpg";
-    const info = "Size: S  Quantity: 1"
-    const price = "Price: " + data.currencyFormat + data.price;
+    const info = "Size: "+size + "  Quantity: " + quantity
+    const price = "Price: " + data.currencyFormat + data.price * quantity;
 
     const subtitle = (
         <div>
