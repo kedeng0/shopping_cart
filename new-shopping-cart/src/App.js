@@ -19,10 +19,10 @@ const useStyles = makeStyles({
 
 const App = () => {
   const classes = useStyles();
-  const [data, setData] = useState({});
+  const [product, setProduct] = useState({});
   const [cartOpen, setCartOpen] = useState(false);
   const [selected, setSelected] = useState([]);
-  const products = Object.values(data);
+  const products = Object.values(product);
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await fetch('./data/products.json');
@@ -31,7 +31,7 @@ const App = () => {
       const inventory = await inventory_response.json();
       let result = {}
       Object.keys(product).forEach(p=>{result[p] = Object.assign(product[p],inventory[p])});
-      setData(result);
+      setProduct(result);
     };
     
     fetchProducts();
@@ -42,6 +42,13 @@ const App = () => {
   };
 
   const addToCart = (data,size)=> {
+    if (product[data.sku][size] <= 0) {
+      alert('Size out of stock!');
+      return;
+    }
+    product[data.sku][size]-=1;
+    console.log('item',product[data.sku][size] )
+
       let originalList = selected;
       const ind = originalList.findIndex(item=>item.data.sku === data.sku && item.size===size);
       if (ind > -1) {
@@ -54,9 +61,13 @@ const App = () => {
         })
       }
       setSelected(originalList)
+     
+     
+    
   }
 
   const removeFromCart = (data,size) => {
+    product[data.sku][size]+=1;
     let originalList = selected;
     const ind = originalList.findIndex(item=>item.data.sku === data.sku && item.size===size);
 
