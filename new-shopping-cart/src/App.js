@@ -11,6 +11,9 @@ import Cart from './components/Cart';
 const useStyles = makeStyles({
  background:{
    backgroundColor:'#37474f'
+ },
+ container: {
+    marginTop:64,
  }
 });
 
@@ -48,13 +51,26 @@ const App = () => {
       setSelected(originalList)
   }
 
+  const removeFromCart = (data,size) => {
+    let originalList = selected;
+    const ind = originalList.findIndex(item=>item.data.sku === data.sku && item.size===size);
+
+    if (ind > -1) {
+      originalList[ind].quantity -= 1;
+      if (originalList[ind].quantity === 0) {
+        originalList.splice(ind,1);
+      }
+    }
+    setSelected(originalList.slice(0))
+  }
+
   return (
     <div className={classes.background}>
     <Header onMenuClick={()=>{setCartOpen(true)}}/>
     <Drawer anchor="bottom" open={cartOpen} onClose={toggleDrawer(false)}>
-      <Cart items={selected}/>
+      <Cart items={selected} handleDelete={removeFromCart}/>
     </Drawer>
-    <Container>
+    <Container className={classes.container}>
     <GridList cellHeight={500} cols={4}>
       {products.map(product => <GridListTile key={product.sku}><ItemCard data={product} addToCart={addToCart}/></GridListTile>)}
     </GridList>

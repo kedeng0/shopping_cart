@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 
 
 
-export default function Cart({items}) {
+export default function Cart({items, handleDelete}) {
     const classes = useStyles();
     const products = Object.values(items);
     let subtotal = 0;
@@ -52,7 +52,7 @@ export default function Cart({items}) {
             </Typography>        
             <div className={classes.container}>
             <GridList className={classes.gridList} cols={2.5}>
-                {products.map(product=><CartItemCard listing={product} key={product.data.sku}/>)}
+                {products.map(product=><CartItemCard listing={product} key={product.data.sku} handleDelete={handleDelete}/>)}
             </GridList>
         </div>
         <Divider />

@@ -23,7 +23,7 @@ export default function ButtonAppBar({onMenuClick}) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="sticky" color='default'>
+      <AppBar position="fixed" color='default'>
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={onMenuClick}>
             <ShoppingCartIcon />

@@ -2,6 +2,9 @@ import React from 'react';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,7 +17,7 @@ const useStyles = makeStyles(theme => ({
    
   }));
 
-  export default function CartItemCard({listing}) {
+  export default function CartItemCard({listing,handleDelete}) {
     const classes = useStyles();
     const {data,quantity,size} = listing;
     
@@ -24,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 
     const subtitle = (
         <div>
-            <Typography variant='body2'>
+          <Typography variant='body2'>
             {info}
           </Typography>
           <Typography variant='body2'>
@@ -32,9 +35,9 @@ const useStyles = makeStyles(theme => ({
           </Typography>
         </div>
     )
-
     return (
-        <GridListTile key={data.sku} className={classes.root}>       
+        <GridListTile key={data.sku} className={classes.root}>
+          <Button onClick={()=>handleDelete(data,size)}><DeleteIcon color='secondary'/></Button>
             <img src={imageSource} alt={data.title}/>
             <GridListTileBar
               title={data.title}
@@ -43,7 +46,6 @@ const useStyles = makeStyles(theme => ({
                 root: classes.titleBar,
                 title: classes.title,
               }}
-              
             />
         </GridListTile>
     )
