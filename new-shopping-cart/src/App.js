@@ -8,7 +8,6 @@ import Container from '@material-ui/core/Container';
 import Drawer from '@material-ui/core/Drawer';
 import Cart from './components/Cart';
 import firebase from 'firebase/app';
-import 'firebase/auth';
 import 'firebase/database';
 
 const useStyles = makeStyles({
@@ -34,11 +33,14 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database().ref();
 
+
+
 const App = () => {
   const classes = useStyles();
   const [product, setProduct] = useState({});
   const [cartOpen, setCartOpen] = useState(false);
   const [selected, setSelected] = useState([]);
+
   const products = Object.values(product);
 
   useEffect(() => {
@@ -58,9 +60,6 @@ const App = () => {
 
     fetchProducts()
   }, []);
-
-
-
 
   const toggleDrawer = (open) => event => {
     setCartOpen(open);
