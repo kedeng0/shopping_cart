@@ -1,6 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import Header from './components/Header';
+import ItemCard from './components/ItemCard';
+import GridList from '@material-ui/core/GridList';
+import { GridListTile } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+
+
+
+const useStyles = makeStyles({
+ background:{
+   backgroundColor:'#37474f'
+ }
+});
 
 const App = () => {
+  const classes = useStyles();
   const [data, setData] = useState({});
   const products = Object.values(data);
   useEffect(() => {
@@ -13,9 +28,14 @@ const App = () => {
   }, []);
 
   return (
-    <ul>
-      {products.map(product => <li key={product.sku}>{product.title}</li>)}
-    </ul>
+    <div className={classes.background}>
+    <Header/>
+    <Container>
+    <GridList cellHeight={500} cols={4}>
+      {products.map(product => <GridListTile key={product.sku}><ItemCard data={product}/></GridListTile>)}
+    </GridList>
+    </Container>
+    </div>
   );
 };
 
