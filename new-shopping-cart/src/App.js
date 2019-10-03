@@ -26,9 +26,14 @@ const App = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await fetch('./data/products.json');
-      const json = await response.json();
-      setData(json);
+      const product = await response.json();
+      const inventory_response = await fetch('./data/inventory.json');
+      const inventory = await inventory_response.json();
+      let result = {}
+      Object.keys(product).forEach(p=>{result[p] = Object.assign(product[p],inventory[p])});
+      setData(result);
     };
+    
     fetchProducts();
   }, []);
 

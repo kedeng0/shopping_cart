@@ -72,10 +72,10 @@ export default function ItemCard({data,addToCart}) {
       </CardActionArea>
       <CardActions className={classes.cardBottom}>
         <div>
-          <Chip className={classes.chip} color={size==='S'?'primary':'default'} label="S" onClick={()=>setSize('S')}/>
-          <Chip className={classes.chip} color={size==='M'?'primary':'default'} label="M" onClick={()=>setSize('M')}/>
-          <Chip className={classes.chip} color={size==='L'?'primary':'default'} label="L" onClick={()=>setSize('L')}/>
-          <Chip className={classes.chip} color={size==='XL'?'primary':'default'} label="XL" onClick={()=>setSize('XL')}/>
+          <Chip className={classes.chip} color={size==='S'?'primary':'default'} label="S" onClick={()=>setSize('S')} disabled={data.S === 0}/>
+          <Chip className={classes.chip} color={size==='M'?'primary':'default'} label="M" onClick={()=>setSize('M')} disabled={data.M === 0}/>
+          <Chip className={classes.chip} color={size==='L'?'primary':'default'} label="L" onClick={()=>setSize('L')} disabled={data.L === 0}/>
+          <Chip className={classes.chip} color={size==='XL'?'primary':'default'} label="XL" onClick={()=>setSize('XL')} disabled={data.XL === 0}/>
         </div>
         <Button className={classes.button} onClick={handleClick}>
         Add to Cart
