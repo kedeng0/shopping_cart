@@ -1,4 +1,4 @@
-import React , {useState,useEffect}from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -37,7 +37,7 @@ const uiConfig = {
 const Welcome = ({ user }) => (
   <div color="info">
       Welcome, {user.displayName}
-      <Button primary onClick={() => firebase.auth().signOut()}>
+      <Button onClick={() => firebase.auth().signOut()}>
         Log out
       </Button>
   </div>
@@ -50,13 +50,9 @@ const SignIn = () => (
   />
 );
 
-export default function ButtonAppBar({onMenuClick}) {
+export default function ButtonAppBar({onMenuClick, user}) {
   const classes = useStyles();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged(setUser);
-  }, []);
+ 
 
   return (
     <div className={classes.root}>
@@ -68,7 +64,7 @@ export default function ButtonAppBar({onMenuClick}) {
           <Typography variant="h6" className={classes.title}>
             Shopping Cart
           </Typography>
-          {!user ? <SignIn /> : <Welcome user={user}/>}
+          {!user ? <SignIn/> : <Welcome user={user}/>}
         </Toolbar>
       </AppBar>
     </div>

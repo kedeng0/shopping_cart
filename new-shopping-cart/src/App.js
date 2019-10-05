@@ -9,6 +9,7 @@ import Drawer from '@material-ui/core/Drawer';
 import Cart from './components/Cart';
 import firebase from 'firebase/app';
 import 'firebase/database';
+import _ from 'lodash';
 
 const useStyles = makeStyles({
  background:{
@@ -31,7 +32,8 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database().ref();
+const db = firebase.database();
+
 
 
 
@@ -40,8 +42,12 @@ const App = () => {
   const [product, setProduct] = useState({});
   const [cartOpen, setCartOpen] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [user, setUser] = useState(null);
+
 
   const products = Object.values(product);
+
+  
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -54,16 +60,33 @@ const App = () => {
           setProduct(result);
         }
       };
-      db.on('value', handleData, error => alert(error));
-      return () => { db.off('value', handleData)}; 
+      const handleCartData = snap=>{
+        if(snap.val()) {
+          setSelected(snap.val());
+        }
+      };
+      db.ref('inventory').on('value', handleData, error => alert(error));
+      if (user) {
+        mergeCarts(selected,user.uid);
+        db.ref('cart/' + user.uid).on('value',handleCartData, error=>alert(error));
+      } else {
+        setSelected([])
+      }
+      return () => { 
+        db.ref('inventory').off('value', handleData);
+        if (user) {
+        db.ref('cart/' + user.uid).off('value',handleCartData)
+        }
+       };
     }
-
     fetchProducts()
-  }, []);
+  }, [user]);
 
-  const toggleDrawer = (open) => event => {
-    setCartOpen(open);
-  };
+  
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(setUser)
+    },[]); 
 
   const addToCart = (data,size)=> {
     if (product[data.sku][size] <= 0) {
@@ -83,7 +106,11 @@ const App = () => {
         size,
       })
     }
-    setSelected(originalList)
+    setSelected(originalList.slice(0))
+
+    if (user) {
+      setFirebaseCart(user.uid,originalList.slice(0))
+    }
   }
 
   const removeFromCart = (data,size) => {
@@ -98,13 +125,54 @@ const App = () => {
       }
     }
     setSelected(originalList.slice(0))
+
+    if (user) {
+      setFirebaseCart(user.uid,originalList.slice(0))
+    }
   }
+
+  const setFirebaseCart = (userId, cart) => {
+    db.ref('cart/' + userId).set(cart);
+  }
+
+
+const mergeCarts = (localCart, userId) => {
+  db.ref('cart/' + userId).once('value')
+  .then((dataSnapshot)=> {
+    let savedCart = dataSnapshot.val() || [];
+    localCart.forEach(item=>{
+      let sku = item.data.sku;
+      let size = item.size;
+      const ind = savedCart.findIndex(cloud=>sku === cloud.data.sku && size===cloud.size);
+      if (ind > -1) {
+        if (product[sku][size] > 0) {
+          product[sku][size] -= 1;
+          savedCart[ind].quantity+=1;
+        }
+      } else {
+        savedCart.push(item);
+      }
+    })
+    db.ref('cart/' + userId).set(savedCart)
+  })
+}
+
+const onCheckout = ()=> {
+
+
+
+setSelected([]);
+if (user) {
+  setFirebaseCart(user.uid,selected);
+}
+alert('You have successfully checkedout!')
+}
 
   return (
     <div className={classes.background}>
-    <Header onMenuClick={()=>{setCartOpen(true)}}/>
-    <Drawer anchor="bottom" open={cartOpen} onClose={toggleDrawer(false)}>
-      <Cart items={selected} handleDelete={removeFromCart}/>
+    <Header onMenuClick={()=>{setCartOpen(true)}} user={user}/>
+    <Drawer anchor="bottom" open={cartOpen} onClose={()=>{setCartOpen(false)}}>
+      <Cart items={selected || []} handleDelete={removeFromCart} onCheckout={onCheckout}/>
     </Drawer>
     <Container className={classes.container}>
     <GridList cellHeight={500} cols={4}>

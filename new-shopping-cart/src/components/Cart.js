@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 
 
 
-export default function Cart({items, handleDelete}) {
+export default function Cart({items, handleDelete, onCheckout}) {
     const classes = useStyles();
     const products = Object.values(items);
     let subtotal = 0;
@@ -60,7 +60,7 @@ export default function Cart({items, handleDelete}) {
         <Typography variant="h6" className={classes.title}>
             SubTotal: ${subtotal.toFixed(2)}
             </Typography> 
-        <Button variant="contained" className={classes.button}>
+        <Button variant="contained" className={classes.button} onClick={()=>onCheckout()}>
         Checkout
       </Button>
         </div>
