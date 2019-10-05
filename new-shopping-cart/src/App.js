@@ -43,7 +43,7 @@ const App = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [selected, setSelected] = useState([]);
   const [user, setUser] = useState(null);
-
+  const [inventory, setInventory] = useState({});
 
   const products = Object.values(product);
 
@@ -58,6 +58,7 @@ const App = () => {
           let result = {}
           Object.keys(data).forEach(p=>{result[p] = Object.assign(data[p],snap.val()[p])});
           setProduct(result);
+          setInventory(snap.val())
         }
       };
       const handleCartData = snap=>{
@@ -158,14 +159,26 @@ const mergeCarts = (localCart, userId) => {
 }
 
 const onCheckout = ()=> {
+  let savedInventory = inventory;
+  selected.forEach(item=> {
+    const sku = item.data.sku
+    const quantity = item.quantity
+    const size = item.size
+    if (savedInventory[sku][size] > quantity) {
+      savedInventory[sku][size] -= quantity;
+    } else {
+      alert('Some of your orders exceeds maximum quantity');
+      return;
+    }
+  })
+  setInventory(savedInventory);
+  db.ref('inventory').set(savedInventory);
 
-
-
-setSelected([]);
-if (user) {
-  setFirebaseCart(user.uid,selected);
-}
-alert('You have successfully checkedout!')
+  setSelected([]);
+  if (user) {
+    setFirebaseCart(user.uid,selected);
+  }
+  alert('You have successfully checkedout!')
 }
 
   return (
